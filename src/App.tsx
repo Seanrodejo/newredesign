@@ -23,13 +23,51 @@ type CommunityCardData = {
   shares: string;
 };
 
+// --- Animations Variants (CLEANED - NO "ANY", FULLY TS COMPATIBLE) ---
+const containerVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    transition: { type: "spring", stiffness: 300, damping: 25, delay: 0.1, staggerChildren: 0.05 } 
+  },
+};
+
+const headerVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25 } },
+};
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25 } },
+};
+
+const dotVariants = {
+  active: { 
+    scale: 1.2, 
+    backgroundColor: "#ffffff", 
+    transition: { repeat: Infinity, repeatType: "reverse" as const, duration: 1, ease: "easeInOut" } 
+  },
+  inactive: { scale: 1, backgroundColor: "rgba(255, 255, 255, 0.3)" },
+};
+
 // --- Subcomponents ---
 
 const ShowcaseCardItem = ({ card }: { card: ShowcaseCardData }) => {
   const [liked, setLiked] = useState(false);
 
   return (
-    <div className="relative w-[112px] h-[160px] flex-shrink-0 snap-start rounded-[20px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.4)] border border-white/5 bg-[#1a1a1a]">
+    <motion.div 
+      variants={cardVariants}
+      whileHover={{ y: -5, boxShadow: "0px 12px 25px rgba(255,255,255,0.05)", transition: { type: "spring", stiffness: 300, damping: 25 } }}
+      className="relative w-[112px] h-[160px] flex-shrink-0 snap-start rounded-[20px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.4)] border border-white/5 bg-[#1a1a1a]"
+    >
       <img 
         src={card.imageSrc} 
         alt={card.name} 
@@ -40,16 +78,17 @@ const ShowcaseCardItem = ({ card }: { card: ShowcaseCardData }) => {
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
       
       {card.pro && (
-        <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 z-10 flex items-center justify-center">
+        <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 z-10 flex items-center justify-center shadow-md">
            <span className="text-white text-[7px] font-black tracking-[0.1em] leading-none">PRO</span>
         </div>
       )}
       
-      <img 
+      <motion.img 
         src="/save.svg" 
         alt="Save" 
         draggable={false} 
         className="absolute top-2.5 right-2.5 w-[13px] h-[13px] opacity-70 z-10 hover:opacity-100 transition-opacity" 
+        whileHover={{ scale: 1.2 }}
       />
 
       <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center gap-2 z-10">
@@ -61,17 +100,18 @@ const ShowcaseCardItem = ({ card }: { card: ShowcaseCardData }) => {
           {card.name}
         </span>
         
-        <button 
+        <motion.button 
           onPointerDown={(e) => { e.stopPropagation(); setLiked(!liked); }} 
-          className="flex items-center justify-end gap-[2px] active:scale-75 transition-all cursor-pointer flex-shrink-0"
+          className="flex items-center justify-end gap-[2px] cursor-pointer flex-shrink-0"
+          whileTap={{ scale: 0.8, transition: { type: "spring", stiffness: 500, damping: 10 } }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="10.5" height="10.5" viewBox="0 0 24 24" fill={liked ? "#ff4545" : "none"} stroke={liked ? "#ff4545" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
             <path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566a5 5 0 1 1 7.5 6.572"/>
           </svg>
           <span className="text-[8.5px] font-bold text-white select-none">{card.likes}</span>
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -79,7 +119,11 @@ const CommunityCardItem = ({ card }: { card: CommunityCardData }) => {
   const [liked, setLiked] = useState(false);
 
   return (
-    <div className="relative w-[112px] h-[160px] flex-shrink-0 snap-start rounded-[20px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.4)] border border-white/5 bg-[#1a1a1a]">
+    <motion.div 
+      variants={cardVariants}
+      whileHover={{ y: -5, boxShadow: "0px 12px 25px rgba(255,255,255,0.05)", transition: { type: "spring", stiffness: 300, damping: 25 } }}
+      className="relative w-[112px] h-[160px] flex-shrink-0 snap-start rounded-[20px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.4)] border border-white/5 bg-[#1a1a1a]"
+    >
       <img 
         src={card.imageSrc} 
         alt={card.title} 
@@ -89,9 +133,12 @@ const CommunityCardItem = ({ card }: { card: CommunityCardData }) => {
       
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
       
-      <div className="absolute top-2.5 left-2.5 bg-white/10 backdrop-blur-md rounded-lg p-1.5 border border-white/5">
+      <motion.div 
+        className="absolute top-2.5 left-2.5 bg-white/10 backdrop-blur-md rounded-lg p-1.5 border border-white/5 shadow-sm"
+        whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+      >
         <img src="/playbutton.svg" alt="Play" draggable={false} className="w-[14px] h-[14px] opacity-100" />
-      </div>
+      </motion.div>
 
       <div className="absolute bottom-3 left-2.5 right-2.5 flex flex-col justify-end gap-1.5 z-10">
         <span className="text-[9.5px] font-bold text-white/95 leading-tight select-none line-clamp-1 drop-shadow-lg tracking-tight">
@@ -99,34 +146,39 @@ const CommunityCardItem = ({ card }: { card: CommunityCardData }) => {
         </span>
         
         <div className="flex items-center gap-3 w-full">
-          <button 
+          <motion.button 
             onPointerDown={(e) => { e.stopPropagation(); setLiked(!liked); }} 
-            className="flex items-center gap-1 active:scale-75 transition-all cursor-pointer z-20"
+            className="flex items-center gap-1 cursor-pointer z-20"
+            whileTap={{ scale: 0.8, transition: { type: "spring", stiffness: 500, damping: 10 } }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill={liked ? "#ff4545" : "none"} stroke={liked ? "#ff4545" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg">
               <path d="M19.5 12.572l-7.5 7.428-7.5-7.428a5 5 0 1 1 7.5-6.566a5 5 0 1 1 7.5 6.572"/>
             </svg>
             <span className="text-[8.5px] font-bold text-white select-none">{card.likes}</span>
-          </button>
+          </motion.button>
 
           <div className="flex items-center gap-1 z-20">
-            <button className="active:scale-75 transition-all cursor-pointer opacity-90">
+            <motion.button 
+              className="cursor-pointer opacity-90 hover:opacity-100"
+              whileTap={{ scale: 0.8, transition: { type: "spring", stiffness: 500, damping: 10 } }}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
               </svg>
-            </button>
+            </motion.button>
             <span className="text-[8.5px] font-bold text-white select-none">{card.shares}</span>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 export default function App() {
   const [activeNav, setActiveNav] = useState('home');
   const [activeTab, setActiveTab] = useState('discover');
-  
+  const [currentSlide] = useState(0);
+
   const maleConstraintsRef = useRef<HTMLDivElement>(null);
   const communityConstraintsRef = useRef<HTMLDivElement>(null);
 
@@ -163,57 +215,72 @@ export default function App() {
     <main className="min-h-screen w-full bg-[#0a0a0a] flex items-center justify-center py-8 font-sans select-none overflow-hidden relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-      <section className="relative w-full max-w-[390px] h-[844px] bg-[#111111] rounded-[48px] shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden border-[10px] border-[#1a1a1a] flex flex-col ring-1 ring-white/5">
+      <motion.section 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative w-full max-w-[390px] h-[844px] bg-[#111111] rounded-[48px] shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden border-[10px] border-[#1a1a1a] flex flex-col ring-1 ring-white/5"
+      >
         
-        <div className="w-full h-12 flex-shrink-0"></div>
+        <div className="w-full h-12 flex-shrink-0 z-50"></div>
 
-        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-32 [&::-webkit-scrollbar]:hidden scroll-smooth">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden pb-32 [&::-webkit-scrollbar]:hidden scroll-smooth stagger-children">
           
-          <header className="px-5 pb-6 flex justify-between items-center">
-            <button className="flex items-center justify-center p-2 -ml-2 hover:bg-white/5 rounded-full active:scale-90 transition-all cursor-pointer">
-              <img src="/chevronleft.svg" alt="Back" draggable={false} className="w-[28px] h-[28px] object-contain" />
-            </button>
+          <motion.header variants={headerVariants} className="px-5 pb-6 flex justify-between items-center">
+            <motion.button 
+              className="flex items-center justify-center p-2 -ml-2 rounded-full hover:bg-white/5 cursor-pointer"
+              whileTap={{ scale: 0.8, transition: { type: "spring", stiffness: 500, damping: 10 } }}
+            >
+              <img src="/chevronleft.svg" alt="Back" draggable={false} className="w-[28px] h-[28px] object-contain drop-shadow-md" />
+            </motion.button>
             
             <div className="flex items-center gap-3">
-              <button className="flex items-center active:scale-95 transition-all hover:brightness-125 cursor-pointer shadow-lg">
-                <img src="/progold499.png" alt="499 PRO" draggable={false} className="h-[28px] w-auto object-contain" />
-              </button>
+              <motion.button 
+                className="flex items-center hover:brightness-125 cursor-pointer"
+                whileTap={{ scale: 0.95, transition: { type: "spring", stiffness: 450, damping: 10 } }}
+              >
+                <img src="/progold499.png" alt="499 PRO" draggable={false} className="h-[28px] w-auto object-contain drop-shadow-lg" />
+              </motion.button>
               
-              <button className="flex items-center justify-center w-[34px] h-[32px] rounded-full overflow-hidden bg-[#222] active:scale-95 transition-all border border-white/20 shadow-md">
+              <motion.button 
+                className="flex items-center justify-center w-[34px] h-[32px] rounded-full overflow-hidden bg-[#222] border border-white/20 shadow-md"
+                whileTap={{ scale: 0.9, transition: { type: "spring", stiffness: 450, damping: 10 } }}
+              >
                 <img src="/profilepic.svg" alt="Profile" draggable={false} className="w-full h-full object-cover" />
-              </button>
+              </motion.button>
             </div>
-          </header>
+          </motion.header>
 
-          {/* TABS: Red Badge is now INSIDE the flex label for perfect alignment */}
-          <div className="px-5 mb-7 flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x items-center">
+          <motion.div variants={listVariants} className="px-5 mb-7 flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden snap-x items-center">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               const isNew = tab.id === 'new';
               return (
-                <button 
+                <motion.button 
+                  variants={cardVariants}
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative flex items-center justify-center px-3.5 py-1.5 rounded-full text-[8.5px] tracking-[0.2em] uppercase font-medium transition-all duration-300 active:scale-90 snap-start
+                  whileTap={{ scale: 0.9, transition: { type: "spring", stiffness: 500, damping: 10 } }}
+                  className={`relative flex items-center justify-center px-3.5 py-1.5 rounded-full text-[8.5px] tracking-[0.2em] uppercase font-medium transition-all duration-300 snap-start
                     ${isActive 
                       ? 'bg-white text-black shadow-lg border border-white' 
-                      : 'bg-[#1e1f24]/50 backdrop-blur-sm text-white/30 border border-white/5'
+                      : 'bg-[#1e1f24]/50 backdrop-blur-sm text-white/30 border border-white/5 hover:border-white/10'
                     }`}
                 >
                   <span className="flex items-center gap-1.5 leading-none">
                     {tab.label}
                     {isNew && (
-                      <span className="bg-[#ff3b30] text-white text-[7.5px] w-[14.5px] h-[14.5px] rounded-full flex items-center justify-center font-bold shadow-sm leading-[0] pb-[0.5px] tracking-normal">
+                      <span className="bg-[#ff3b30] text-white text-[7.5px] w-[14.5px] h-[14.5px] rounded-full flex items-center justify-center font-bold shadow-sm leading-[0] pb-[0.5px] tracking-normal border border-[#ff3b30]/50">
                         67
                       </span>
                     )}
                   </span>
-                </button>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
 
-          <div className="px-5 mb-10">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 25, delay: 0.2 } }} className="px-5 mb-10">
             <div className="relative w-full h-[255px] rounded-[32px] overflow-hidden bg-[#1a1a1a] pointer-events-none shadow-2xl border border-white/5">
               <img 
                 src="/micromagic.png" 
@@ -238,36 +305,54 @@ export default function App() {
                       className="h-[84px] w-auto object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] -ml-5" 
                     />
                   </div>
-                  <button className="flex items-center active:scale-90 transition-all hover:brightness-110 cursor-pointer flex-shrink-0 ml-4 mb-4">
+                  <motion.button 
+                    className="flex items-center cursor-pointer flex-shrink-0 ml-4 mb-4"
+                    whileTap={{ scale: 0.9, transition: { type: "spring", stiffness: 450, damping: 10 } }}
+                    whileHover={{ scale: 1.05, filter: "brightness(1.1)" }}
+                  >
                      <img src="/trynow.png" alt="Try Now!" draggable={false} className="h-[36px] w-auto object-contain drop-shadow-2xl" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
             
-            <div className="mt-5 flex justify-center items-center gap-1.5">
-              <div className="h-[5px] w-[5px] rounded-full bg-white opacity-100"></div>
-              <div className="h-[4px] w-[4px] rounded-full bg-white/30"></div>
-              <div className="h-[4px] w-[4px] rounded-full bg-white/30"></div>
+            <div className="mt-5 flex justify-center items-center gap-1.5 z-20 relative">
+              {[0, 1, 2].map((dotIndex) => (
+                <motion.div
+                  key={dotIndex}
+                  variants={dotVariants}
+                  animate={dotIndex === currentSlide ? "active" : "inactive"}
+                  className="rounded-full shadow-inner"
+                  style={{ width: dotIndex === currentSlide ? "6px" : "4.5px", height: dotIndex === currentSlide ? "6px" : "4.5px" }}
+                />
+              ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div className="mb-9" ref={maleConstraintsRef}>
-            <div className="px-5 flex justify-between items-end mb-4">
-              <h3 className="text-white/90 font-semibold text-[12px] tracking-[0.15em] uppercase leading-none">
+          <motion.div variants={listVariants} className="mb-9" ref={maleConstraintsRef}>
+            <motion.div variants={headerVariants} className="px-5 flex justify-between items-end mb-4">
+              <h3 className="text-white/90 font-semibold text-[12px] tracking-[0.15em] uppercase leading-none shadow-sm">
                 AI Photoshoots Male
               </h3>
-              <button className="text-white/30 hover:text-white/80 flex items-center gap-1 transition-all active:scale-90 cursor-pointer group">
-                <span className="text-[11px] font-bold tracking-wide">See all</span>
-                <img src="/chevronright.svg" alt="" draggable={false} className="w-2.5 h-2.5 object-contain opacity-30 group-hover:opacity-80 transition-opacity" />
-              </button>
-            </div>
+              <motion.button 
+                className="text-white/30 flex items-center gap-1 cursor-pointer group"
+                whileHover={{ scale: 1.05, color: "rgba(255, 255, 255, 0.7)" }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-[11px] font-bold tracking-wide pt-[1px] transition-colors group-hover:text-white/70">See all</span>
+                <img src="/chevronright.svg" alt="" draggable={false} className="w-2.5 h-2.5 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+              </motion.button>
+            </motion.div>
             
             <div className="overflow-hidden w-full">
               <motion.div 
                 drag="x" 
                 dragConstraints={maleConstraintsRef}
                 className="flex gap-3 w-max cursor-grab active:cursor-grabbing pb-2 items-start px-5"
+                variants={listVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
               >
                 {showcaseCards.map((card) => (
                   <ShowcaseCardItem key={card.id} card={card} />
@@ -275,24 +360,32 @@ export default function App() {
                 <div className="w-[15px] flex-shrink-0 h-1"></div>
               </motion.div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="mb-4" ref={communityConstraintsRef}>
-            <div className="px-5 flex justify-between items-end mb-4">
-              <h3 className="text-white/90 font-semibold text-[12px] tracking-[0.15em] uppercase leading-none">
+          <motion.div variants={listVariants} className="mb-4" ref={communityConstraintsRef}>
+            <motion.div variants={headerVariants} className="px-5 flex justify-between items-end mb-4">
+              <h3 className="text-white/90 font-semibold text-[12px] tracking-[0.15em] uppercase leading-none shadow-sm">
                 Community
               </h3>
-              <button className="text-white/30 hover:text-white/80 flex items-center gap-1 transition-all active:scale-90 cursor-pointer group">
-                <span className="text-[11px] font-bold tracking-wide">See all</span>
-                <img src="/chevronright.svg" alt="" draggable={false} className="w-2.5 h-2.5 object-contain opacity-30 group-hover:opacity-80 transition-opacity" />
-              </button>
-            </div>
+              <motion.button 
+                className="text-white/30 flex items-center gap-1 cursor-pointer group"
+                whileHover={{ scale: 1.05, color: "rgba(255, 255, 255, 0.7)" }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="text-[11px] font-bold tracking-wide pt-[1px] transition-colors group-hover:text-white/70">See all</span>
+                <img src="/chevronright.svg" alt="" draggable={false} className="w-2.5 h-2.5 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+              </motion.button>
+            </motion.div>
             
             <div className="overflow-hidden w-full">
               <motion.div 
                 drag="x" 
                 dragConstraints={communityConstraintsRef}
                 className="flex gap-3 w-max cursor-grab active:cursor-grabbing pb-2 items-start px-5"
+                variants={listVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
               >
                 {communityCards.map((card) => (
                   <CommunityCardItem key={card.id} card={card} />
@@ -300,11 +393,16 @@ export default function App() {
                 <div className="w-[15px] flex-shrink-0 h-1"></div>
               </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-[92%] z-50 pointer-events-auto">
-          <nav className="bg-[#1a1b1f]/85 backdrop-blur-3xl border border-white/10 rounded-[32px] p-2 flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-auto ring-1 ring-white/5">
+        {/* PERFECTLY CENTERED NAV BAR WRAPPER */}
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 w-[92%] z-50 pointer-events-none flex justify-center items-center">
+          <motion.nav 
+            initial={{ y: 50, opacity: 0 }} 
+            animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 25, delay: 0.5 } }} 
+            className="bg-[#1a1b1f]/85 backdrop-blur-3xl border border-white/10 rounded-[32px] p-2 flex justify-between items-center shadow-[0_20px_50px_rgba(0,0,0,0.8)] pointer-events-auto ring-1 ring-white/5 relative w-full"
+          >
             {navItems.map((item) => {
               const isActive = activeNav === item.id;
               const isInbox = item.id === 'gallery';
@@ -313,7 +411,7 @@ export default function App() {
                 <button
                   key={item.id}
                   onClick={() => setActiveNav(item.id)}
-                  className="relative p-[13px] flex-1 flex justify-center items-center rounded-2xl z-10 transition-all active:scale-75 cursor-pointer"
+                  className="relative p-[13px] flex-1 flex justify-center items-center rounded-2xl z-10 cursor-pointer transition-transform active:scale-90"
                 >
                   {isActive && (
                     <motion.div
@@ -335,9 +433,9 @@ export default function App() {
                 </button>
               );
             })}
-          </nav>
+          </motion.nav>
         </div>
-      </section>
+      </motion.section>
     </main>
   );
 }
