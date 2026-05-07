@@ -9,6 +9,10 @@ export default {
       boxShadow: {
         "3d-dark-2": "var(--3d-dark-2)",
       },
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+      },
     },
   },
   plugins: [],
