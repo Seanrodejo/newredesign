@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  button, input, select, textarea {
+    @apply appearance-none bg-transparent border-0 outline-none;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    /* Prevents accidental text highlighting when clicking and dragging */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Stops the whole page from bouncing when scrolling to the top/bottom */
+    overscroll-behavior-y: none;
+  }
+}
+
+@layer utilities {
+  /* Cross-browser bulletproof scrollbar hiding */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
+:root {
+  --3d-dark-2: 1px 3px 3px 0px rgba(0, 0, 0, 1);
+  --colors-accents-cyan: rgba(0, 192, 232, 1);
+  /* Synced to perfectly match your App.tsx dark desktop background */
+  background-color: #1e1e1e; 
+}
